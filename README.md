@@ -10,6 +10,27 @@ Installation requirements
 For the HTML help system, you will need emacs-w3m support.
 
 
+Installation (short version)
+----------------------------
+
+```
+mkdir build
+cd build
+cmake
+make
+make install
+```
+
+To install into a custom location, use `cmake -DCMAKE_INSTALL_PREFIX:PATH=/your/path`. You can also edit the `DESTINATION` lines in each `CMakeLists.txt` file for more flexibility.
+
+### SCIDE-like setup
+
+```
+(setq sclang-highlight 'nav-flash-show)
+(define-key sclang-mode-map (kbd "<C-return>") 'sclang-eval-dwim)
+(define-key sclang-mode-map (kbd "<S-return>") 'sclang-eval-region-or-line)
+```
+
 Installation (default)
 ----------------------
 

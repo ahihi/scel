@@ -537,35 +537,47 @@ if PRINT-P is non-nil. Return STRING if successful, otherwise nil."
   (interactive "sEval: \nP")
   (sclang-eval-string string (not silent-p)))
 
+(defun sclang-try-highlight (beg end)
+  (interactive)
+  (when (boundp 'sclang-highlight)
+    (funcall sclang-highlight beg end)))
+
 (defun sclang-eval-line (&optional silent-p)
   "Execute the current line as SuperCollider code."
   (interactive "P")
-  (let ((string (sclang-line-at-point)))
+  (cl-multiple-value-bind (string beg end) (sclang-line-at-point)
     (when string
-      (sclang-eval-string string (not silent-p)))
-    (and sclang-eval-line-forward
-	 (/= (line-end-position) (point-max))
-	 (forward-line 1))
+      (sclang-eval-string string (not silent-p))
+      (sclang-try-highlight beg end))
+    ;; (and sclang-eval-line-forward
+	 ;; (/= (line-end-position) (point-max))
+	 ;; (forward-line 1))
     string))
 
 (defun sclang-eval-region (&optional silent-p)
   "Execute the region as SuperCollider code."
   (interactive "P")
-  (sclang-eval-string
-   (buffer-substring-no-properties (region-beginning) (region-end))
-   (not silent-p)))
+  (let* ((beg (region-beginning))
+        (end (region-end))
+        (result (sclang-eval-string
+                 (buffer-substring-no-properties beg end)
+                 (not silent-p))))
+    (sclang-try-highlight beg end)
+    result))
 
 (defun sclang-eval-region-or-line (&optional silent-p)
   (interactive "P")
   (if (and transient-mark-mode mark-active)
       (sclang-eval-region silent-p)
-    (sclang-eval-line silent-p)))
+    (when (< (line-beginning-position) (line-end-position))
+      (sclang-eval-line silent-p))))
 
 (defun sclang-eval-defun (&optional silent-p)
   (interactive "P")
-  (let ((string (sclang-defun-at-point)))
+  (cl-multiple-value-bind (string beg end) (sclang-defun-at-point)
     (when (and string (string-match "^(" string))
       (sclang-eval-string string (not silent-p))
+      (sclang-try-highlight beg end)
       string)))
 
 (defun sclang-eval-document (&optional silent-p)
@@ -573,9 +585,13 @@ if PRINT-P is non-nil. Return STRING if successful, otherwise nil."
   (interactive "P")
   (save-excursion
     (mark-whole-buffer)
-    (sclang-eval-string
-     (buffer-substring-no-properties (region-beginning) (region-end))
-     (not silent-p))))
+    (let* ((beg (region-beginning))
+           (end (region-end))
+           (result (sclang-eval-string
+                    (buffer-substring-no-properties beg end)
+                    (not silent-p))))
+      (sclang-try-highlight beg end)
+      result)))
 
 (defvar sclang-eval-results nil
   "Save results of sync SCLang evaluation.")

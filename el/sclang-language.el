@@ -317,10 +317,11 @@ Return value is nil or (beg end) of defun."
   (save-excursion
     (let ((orig (point))
 	  beg end)
-      (and (progn (end-of-line) (beginning-of-defun-raw 1) t)
+      (and (progn (end-of-line) (sclang-beginning-of-defun))
 	   (setq beg (point))
 	   (condition-case nil (forward-list 1) (error nil))
 	   (setq end (point))
+           (and (<= beg orig end))
 	   (list beg end)))))
 
 (defun sclang-end-of-defun (&optional arg)
@@ -382,7 +383,10 @@ symbol matched, candidates are `sclang-symbol-name-regexp' and
 
 (defun sclang-line-at-point ()
   "Return the line at point."
-  (buffer-substring-no-properties (line-beginning-position) (line-end-position)))
+  (let* ((beg (line-beginning-position))
+         (end (line-end-position))
+         (string (buffer-substring-no-properties beg end)))
+    (list string beg end)))
 
 (defun sclang-defun-at-point ()
   "Return the defun at point.
@@ -392,7 +396,8 @@ A defun may either be a class definition or a code block, see
   (save-excursion
     (with-syntax-table sclang-mode-syntax-table
       (cl-multiple-value-bind (beg end) (sclang-point-in-defun-p)
-	(and beg end (buffer-substring-no-properties beg end))))))
+        (let ((string (and beg end (buffer-substring-no-properties beg end))))
+          (list string beg end))))))
 
 ;; =====================================================================
 ;; symbol completion

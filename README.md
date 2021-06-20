@@ -16,12 +16,12 @@ Installation (short version)
 ```
 mkdir build
 cd build
-cmake
+cmake ..
 make
 make install
 ```
 
-To install into a custom location, use `cmake -DCMAKE_INSTALL_PREFIX:PATH=/your/path`. You can also edit the `DESTINATION` lines in each `CMakeLists.txt` file for more flexibility.
+To install into a custom location, use `cmake -DCMAKE_INSTALL_PREFIX:PATH=/your/path ..`. You can also edit the `DESTINATION` lines in each `CMakeLists.txt` file for more flexibility.
 
 ### SCIDE-like setup
 

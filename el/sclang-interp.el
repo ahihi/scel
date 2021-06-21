@@ -580,10 +580,10 @@ if PRINT-P is non-nil. Return STRING if successful, otherwise nil."
       (sclang-try-highlight beg end)
       string)))
 
-(defun sclang-eval-dwim ()
+(defun sclang-eval-dwim (&optional silent-p)
   (interactive "P")
-  (or (sclang-eval-defun)
-      (sclang-eval-region-or-line)))
+  (or (sclang-eval-defun silent-p)
+      (sclang-eval-region-or-line silent-p)))
 
 (defun sclang-eval-document (&optional silent-p)
   "Execute the whole document as SuperCollider code."

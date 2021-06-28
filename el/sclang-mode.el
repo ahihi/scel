@@ -85,6 +85,8 @@
 	 ["Recompile Class Library"	sclang-recompile :included (sclang-library-initialized-p)]
 	 ["Stop Interpreter"		sclang-stop	 :included (sclang-get-process)]
 	 ["Kill Interpreter"		sclang-kill	 :included (sclang-get-process)]
+         "-"
+         ["Kill All Servers"            sclang-kill-all-servers]
 	 "-"
 	 ["Show Post Buffer"		sclang-show-post-buffer]
 	 ["Clear Post Buffer"		sclang-clear-post-buffer]

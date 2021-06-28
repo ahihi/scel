@@ -328,6 +328,11 @@ If EOB-P is non-nil, positions cursor at end of buffer."
     (kill-process sclang-process)
     (delete-process sclang-process)))
 
+(defun sclang-kill-all-servers () ;; TODO: probably doesn't work on windows?
+  "Kill all SuperCollider servers."
+  (interactive)
+  (message "%s" (string-trim-right (shell-command-to-string "killall scsynth"))))
+
 (defun sclang-stop ()
   "Stop SuperCollider process."
   (interactive)
